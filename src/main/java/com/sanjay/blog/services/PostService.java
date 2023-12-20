@@ -1,5 +1,6 @@
 package com.sanjay.blog.services;
 
+import com.sanjay.blog.Response.PostResponse;
 import com.sanjay.blog.dto.PostDto;
 import com.sanjay.blog.entity.Post;
 
@@ -21,7 +22,7 @@ public interface PostService {
 
     List<PostDto> searchPosts(String keyword);
 
-    List<PostDto> getAllPosts();
+    PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
 
 }
