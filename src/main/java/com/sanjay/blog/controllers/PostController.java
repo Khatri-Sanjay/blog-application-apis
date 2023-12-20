@@ -3,6 +3,7 @@ package com.sanjay.blog.controllers;
 import com.sanjay.blog.Response.ApiResponse;
 import com.sanjay.blog.Response.PostResponse;
 import com.sanjay.blog.dto.PostDto;
+import com.sanjay.blog.entity.Post;
 import com.sanjay.blog.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,5 +72,13 @@ public class PostController {
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
         this.postService.deletePost(postId);
         return new ResponseEntity<>(new ApiResponse("Post deleted Successfully", true), HttpStatus.OK);
+    }
+
+    @GetMapping("/posts/search/{keywords}")
+    public ResponseEntity<List<PostDto>> searchByPostTitle(
+            @PathVariable("keywords") String keywords
+    ) {
+        List<PostDto> postDtos = this.postService.searchPosts(keywords);
+        return new ResponseEntity<List<PostDto>>(postDtos, HttpStatus.OK);
     }
 }
