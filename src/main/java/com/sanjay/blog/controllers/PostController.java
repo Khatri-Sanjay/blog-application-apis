@@ -1,14 +1,15 @@
 package com.sanjay.blog.controllers;
 
 import com.sanjay.blog.Response.ApiResponse;
+import com.sanjay.blog.Response.PostResponse;
 import com.sanjay.blog.dto.PostDto;
-import com.sanjay.blog.entity.Post;
 import com.sanjay.blog.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -44,9 +45,14 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<List<PostDto>> getAllPosts() {
-        List<PostDto> postDtos = this.postService.getAllPosts();
-        return new ResponseEntity<List<PostDto>>(postDtos, HttpStatus.OK);
+    public ResponseEntity<PostResponse> getAllPosts(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
+            @RequestParam(value = "shortBy", defaultValue = "addedDate", required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir
+            ) {
+        PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize, sortBy, sortDir);
+        return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")

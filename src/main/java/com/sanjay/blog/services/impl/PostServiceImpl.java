@@ -1,5 +1,6 @@
 package com.sanjay.blog.services.impl;
 
+import com.sanjay.blog.Response.PostResponse;
 import com.sanjay.blog.dto.PostDto;
 import com.sanjay.blog.entity.Category;
 import com.sanjay.blog.entity.Post;
@@ -11,9 +12,10 @@ import com.sanjay.blog.repository.UserRepository;
 import com.sanjay.blog.services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -114,10 +116,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        List<Post> posts = this.postRepository.findAll();
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+
+        Sort sort = (sortDir.equalsIgnoreCase("asc")) ? Sort.by(sortDir).ascending() : Sort.by(sortDir).descending();
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Post> postPage = this.postRepository.findAll(pageable);
+
+        List<Post> posts = postPage.getContent();
         List<PostDto> postDtos;
         postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        return postDtos;
+
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(postPage.getNumber());
+        postResponse.setPageSize(postPage.getSize());
+        postResponse.setTotalPages(postPage.getTotalPages());
+        postResponse.setTotalElements(postPage.getTotalElements());
+        postResponse.setLastPage(postPage.isLast());
+
+        return postResponse;
     }
 }
