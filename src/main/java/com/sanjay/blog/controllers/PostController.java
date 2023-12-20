@@ -2,6 +2,7 @@ package com.sanjay.blog.controllers;
 
 import com.sanjay.blog.Response.ApiResponse;
 import com.sanjay.blog.Response.PostResponse;
+import com.sanjay.blog.config.AppConstants;
 import com.sanjay.blog.dto.PostDto;
 import com.sanjay.blog.entity.Post;
 import com.sanjay.blog.services.PostService;
@@ -47,10 +48,10 @@ public class PostController {
 
     @GetMapping("/posts")
     public ResponseEntity<PostResponse> getAllPosts(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "10", required = false) Integer pageSize,
-            @RequestParam(value = "shortBy", defaultValue = "addedDate", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "desc", required = false) String sortDir
+            @RequestParam(value = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(value = "shortBy", defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.SORT_DIR, required = false) String sortDir
             ) {
         PostResponse postResponse = this.postService.getAllPosts(pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<PostResponse>(postResponse, HttpStatus.OK);
